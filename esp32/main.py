@@ -14,27 +14,27 @@ def init_components():
         delta_cm=config.MAIL_DETECTION_DELTA_CM,
         consecutive_required=config.MAIL_CONSECUTIVE_HITS,
     )
-    pull_cfg = Pin.PULL_UP if config.BACK_FLAP_ACTIVE_LOW else Pin.PULL_DOWN
-    flap_pin = Pin(config.BACK_FLAP_PIN, Pin.IN, pull_cfg)
-    return sensor, fsm, flap_pin
+    pull_cfg = Pin.PULL_UP if config.BACK_DOR_ACTIVE_LOW else Pin.PULL_DOWN
+    dor_pin = Pin(config.BACK_DOR_PIN, Pin.IN, pull_cfg)
+    return sensor, fsm, dor_pin
 
 
 def main():
-    sensor, fsm, flap_pin = init_components()
+    sensor, fsm, dor_pin = init_components()
 
     wifi.connect(config.WIFI_SSID, config.WIFI_PASSWORD)
     mqtt_client.setup(broker=config.MQTT_BROKER, topic=config.MQTT_TOPIC)
 
-    last_flap_open = flap_opened(flap_pin)
-    print("Initiale Klappenstellung: offen={}".format(last_flap_open))
+    last_dor_open = dor_opened(dor_pin)
+    print("Initiale Klappenstellung: offen={}".format(last_dor_open))
 
     while True:
-        flap_open = flap_opened(flap_pin)
-        if flap_open != last_flap_open:
-            last_flap_open = flap_open
-            if flap_open:
+        dor_open = dor_opened(dor_pin)
+        if dor_open != last_dor_open:
+            last_dor_open = dor_open
+            if dor_open:
                 has_mail, changed_reset = fsm.reset()
-                print("Klappe geöffnet -> Reset auf 'leer'")
+                print("Klappe offen -> Reset auf 'leer'")
                 mqtt_client.publish_mail_state(has_mail, topic=config.MQTT_TOPIC)
             else:
                 print("Klappe geschlossen")
@@ -50,8 +50,8 @@ def main():
 
         # Statuszeile: Flappe offen/zu und Postzustand
         print(
-            "Status: flap_open={}, has_mail={}".format(
-                flap_open, has_mail
+            "Status: dor_open={}, has_mail={}".format(
+                dor_open, has_mail
             )
         )
 
@@ -62,9 +62,9 @@ def main():
         time.sleep(config.MEASURE_INTERVAL_SEC)
 
 
-def flap_opened(flap_pin):
-    val = flap_pin.value()
-    if config.BACK_FLAP_ACTIVE_LOW:
+def dor_opened(dor_pin):
+    val = dor_pin.value()
+    if config.BACK_DOR_ACTIVE_LOW:
         return val == 1  # Pull-up: offen = 1, gedrückt = 0
     return val == 0
 
