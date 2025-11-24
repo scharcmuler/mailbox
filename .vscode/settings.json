@@ -6,5 +6,6 @@
   "python.analysis.diagnosticSeverityOverrides": {
     "reportMissingModuleSource": "none",
     "reportMissingImports": "none"
-  }
+  },
+  "micropico.syncFolder": "esp32"
 }
