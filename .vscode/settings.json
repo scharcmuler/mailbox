@@ -1,11 +1,17 @@
 {
   "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
   "python.analysis.extraPaths": [
-    "${workspaceFolder}/.venv/lib/python3.13/site-packages"
+    "${workspaceFolder}/.venv/lib/python3.13/site-packages",
+    "~/.micropico-stubs/included"
+  ],
+  "python.analysis.typeshedPaths": [
+    "~/.micropico-stubs/included"
   ],
   "python.analysis.diagnosticSeverityOverrides": {
     "reportMissingModuleSource": "none",
     "reportMissingImports": "none"
   },
-  "micropico.syncFolder": "esp32"
+  "python.analysis.typeCheckingMode": "basic",
+  "micropico.syncFolder": "esp32",
+  "micropico.openOnStart": true
 }

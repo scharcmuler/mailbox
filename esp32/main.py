@@ -14,11 +14,8 @@ def init_components():
         delta_cm=config.MAIL_DETECTION_DELTA_CM,
         consecutive_required=config.MAIL_CONSECUTIVE_HITS,
     )
-    flap_pin = Pin(
-        config.BACK_FLAP_PIN,
-        Pin.IN,
-        Pin.PULL_UP if config.BACK_FLAP_ACTIVE_LOW else None,
-    )
+    pull_cfg = Pin.PULL_UP if config.BACK_FLAP_ACTIVE_LOW else Pin.PULL_DOWN
+    flap_pin = Pin(config.BACK_FLAP_PIN, Pin.IN, pull_cfg)
     return sensor, fsm, flap_pin
 
 
